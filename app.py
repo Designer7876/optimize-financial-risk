@@ -4,18 +4,18 @@ import pickle
 import streamlit as st
 
 # Load trained model
-pickle_in = open("classifier.pkl", 'rb')
+pickle_in = open("rfc_model.pkl", 'rb')
 classifier = pickle.load(pickle_in)
 
 
 @st.cache()
-def prediction(loan_amnt, int_rate, annual_inc, dti, fico_range_low, pub_rec, revol_bal,
-               revol_util, total_acc, mths_since_rcnt_il, mort_acc,
-               mths_since_recent_bc, mths_since_recent_inq):
-    prediction = classifier.predict([[loan_amnt, int_rate, annual_inc, dti, fico_range_low, pub_rec, revol_bal,
-                                      revol_util, total_acc, mths_since_rcnt_il, mort_acc,
-                                      mths_since_recent_bc, mths_since_recent_inq]])
-    if prediction == 1:
+def prediction(term,issue_d,inq_last_6mths,mort_acc,open_acc,earliest_cr_year,
+               fico_range,annual_inc,revol_bal,revol_util, dti,int_rate,
+               loan_amnt,last_pymnt_amnt):
+    prediction = classifier.predict([[term,issue_d,inq_last_6mths,mort_acc,open_acc,
+                                      earliest_cr_year,fico_range,annual_inc,revol_bal,
+                                      revol_util, dti,int_rate,loan_amnt,last_pymnt_amnt]])
+    if prediction == 0:
         pred = "Fully Paid"
     else:
         pred = "Charged Off"
@@ -31,23 +31,29 @@ def main():
     </div>
     """
     p = """<br>"""
-    la = """
-    <p style="color:white";text-align:left> Loan Amount </p>
-    """
-    ir = """
-        <p style="color:white";text-align:left> Interest Rate </p>
+    term = """
+        <p style="color:white";text-align:left> Loan Term </p>
         """
-    ai = """
-        <p style="color:white";text-align:left> Annual Income </p>
+    is_d = """
+        <p style="color:white";text-align:left> Issue Year </p>
         """
-    dti = """
-        <p style="color:white";text-align:left> Debt To Income Ratio </p>
+    inq = """
+        <p style="color:white";text-align:left> Months since last inquiry </p>
+        """
+    mor_ac = """
+        <p style="color:white";text-align:left> No of mortgage accounts </p>
+        """
+    op_ac = """
+        <p style="color:white";text-align:left> Total number of currently open accounts. </p>
+        """
+    ear_cr = """
+        <p style="color:white";text-align:left> Year of the earliest line of credit </p>
         """
     fico = """
-        <p style="color:white";text-align:left> FICO Range(Low) </p>
+        <p style="color:white";text-align:left> FICO Range(LOW) </p>
         """
-    dpr = """
-        <p style="color:white";text-align:left> Number of derogatory public records </p>
+    an_inc = """
+        <p style="color:white";text-align:left> Annual Income </p>
         """
     crb = """
         <p style="color:white";text-align:left> Total Credit Revolving Balance </p>
@@ -55,20 +61,17 @@ def main():
     rlur = """
         <p style="color:white";text-align:left> Revolving Line Utilization Rate </p>
         """
-    tcl = """
-        <p style="color:white";text-align:left> Total Number of Credit lines </p>
+    dti = """
+        <p style="color:white";text-align:left> Debt To Income Ratio </p>
         """
-    iao = """
-        <p style="color:white";text-align:left> Months Since Most Recent Installment Accounts Opened </p>
+    intr = """
+        <p style="color:white";text-align:left> Interest Rate </p>
         """
-    ma = """
-        <p style="color:white";text-align:left> Number of Mortgage Accounts </p>
+    loan = """
+        <p style="color:white";text-align:left> Loan Amount </p>
         """
-    bao = """
-        <p style="color:white";text-align:left> Months Since Most Recent Bankcard Account Opened </p>
-        """
-    ri = """
-        <p style="color:white";text-align:left> Months Since Most Recent Inquiry </p>
+    lpm = """
+        <p style="color:white";text-align:left> Last Payment Amount </p>
         """
     st.markdown(
         """
@@ -114,57 +117,57 @@ def main():
     # Display aspect of front end
     st.markdown(html_temp, unsafe_allow_html=True)
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(la, unsafe_allow_html=True)
+    st.markdown(term, unsafe_allow_html=True)
 
-    Loan_Amount = st.number_input("")
+    term = st.number_input("")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(ir, unsafe_allow_html=True)
+    st.markdown(is_d, unsafe_allow_html=True)
 
-    Interest_Rate = st.number_input(" ")
+    issue_d = st.number_input(" ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(ai, unsafe_allow_html=True)
+    st.markdown(inq, unsafe_allow_html=True)
 
-    Annual_Income = st.number_input("  ")
+    inq_last_6mths = st.number_input("  ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(dti, unsafe_allow_html=True)
+    st.markdown(mor_ac, unsafe_allow_html=True)
 
-    Debt_To_Income_Ratio = st.number_input("   ")
+    mort_acc = st.number_input("   ")
+    st.markdown(p, unsafe_allow_html=True)
+    st.markdown(op_ac, unsafe_allow_html=True)
+
+    open_acc = st.number_input("    ")
+    st.markdown(p, unsafe_allow_html=True)
+    st.markdown(ear_cr, unsafe_allow_html=True)
+
+    earliest_cr_year = st.number_input("     ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(fico, unsafe_allow_html=True)
 
-    fico_range_low = st.number_input("    ")
+    fico = st.number_input("      ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(dpr, unsafe_allow_html=True)
+    st.markdown(an_inc, unsafe_allow_html=True)
 
-    Number_of_Derogatory_Public_Records = st.number_input("     ")
+    annual_inc = st.number_input("       ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(crb, unsafe_allow_html=True)
 
-    Total_credit_revolving_balance = st.number_input("      ")
+    revol_bal = st.number_input("        ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(rlur, unsafe_allow_html=True)
 
-    Revolving_line_utilization_rate = st.number_input("       ")
+    revol_util = st.number_input("         ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(tcl, unsafe_allow_html=True)
+    st.markdown(intr, unsafe_allow_html=True)
 
-    total_number_of_credit_lines = st.number_input("        ")
+    int_rate = st.number_input("          ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(ri, unsafe_allow_html=True)
+    st.markdown(loan, unsafe_allow_html=True)
 
-    Months_since_most_recent_installment_accounts_opened = st.number_input("         ")
+    loan_amnt = st.number_input("           ")
     st.markdown(p, unsafe_allow_html=True)
-    st.markdown(ma, unsafe_allow_html=True)
+    st.markdown(lpm, unsafe_allow_html=True)
 
-    Number_of_mortgage_accounts = st.number_input("          ")
-    st.markdown(p, unsafe_allow_html=True)
-    st.markdown(bao, unsafe_allow_html=True)
-
-    Months_since_most_recent_bankcard_account_opened = st.number_input("           ")
-    st.markdown(p, unsafe_allow_html=True)
-    st.markdown(ri, unsafe_allow_html=True)
-
-    Months_since_most_recent_inquiry = st.number_input("            ")
+    last_pymnt_amnt = st.number_input("            ")
     result = ""
 
     # When Predict is clicked:
@@ -176,14 +179,10 @@ def main():
     """,
                 unsafe_allow_html=True)
     if st.button("Predict"):
-        result = prediction(Loan_Amount, Interest_Rate, Annual_Income, Debt_To_Income_Ratio, fico_range_low,
-                            Number_of_Derogatory_Public_Records, Total_credit_revolving_balance,
-                            Revolving_line_utilization_rate,
-                            total_number_of_credit_lines, Months_since_most_recent_installment_accounts_opened,
-                            Number_of_mortgage_accounts, Months_since_most_recent_bankcard_account_opened,
-                            Months_since_most_recent_inquiry)
+        result = prediction(term,issue_d,inq_last_6mths,mort_acc,open_acc,earliest_cr_year,
+                            fico_range,annual_inc,revol_bal,revol_util, dti,int_rate,loan_amnt,last_pymnt_amnt)
         st.success(f"Your Loan is {result}")
-        print(Loan_Amount)
+        print(loan_amnt)
 
 
 if __name__ == '__main__':
