@@ -1,4 +1,3 @@
-# %%writefile app.py
 import bz2
 import pickle
 import _pickle as cPickle
@@ -9,7 +8,7 @@ def decompress_pickle(file):
     data = bz2.BZ2File(file, 'rb')
     data = cPickle.load(data)
     return data
-classifier = decompress_pickle('forest.pbz2') 
+classifier = decompress_pickle('forest.pbz2')
 
 @st.cache()
 def prediction(term,issue_d,inq_last_6mths,mort_acc,open_acc,earliest_cr_year,
@@ -35,46 +34,46 @@ def main():
     """
     p = """<br>"""
     term = """
-        <p style="color:white";text-align:left> Loan Term </p>
+        <p style="color:white;text-align:left"> Loan Term </p>
         """
     is_d = """
-        <p style="color:white";text-align:left> Issue Year </p>
+        <p style="color:white;text-align:left"> Issue Year </p>
         """
     inq = """
-        <p style="color:white";text-align:left> Months since last inquiry </p>
+        <p style="color:white;text-align:left"> Months since last inquiry </p>
         """
     mor_ac = """
-        <p style="color:white";text-align:left> No of mortgage accounts </p>
+        <p style="color:white;text-align:left"> No of mortgage accounts </p>
         """
     op_ac = """
-        <p style="color:white";text-align:left> Total number of currently open accounts. </p>
+        <p style="color:white;text-align:left"> Total number of currently open accounts. </p>
         """
     ear_cr = """
-        <p style="color:white";text-align:left> Year of the earliest line of credit </p>
+        <p style="color:white;text-align:left"> Year of the earliest line of credit </p>
         """
     fico = """
-        <p style="color:white";text-align:left> FICO Range(LOW) </p>
+        <p style="color:white;text-align:left"> FICO Range(LOW) </p>
         """
     an_inc = """
-        <p style="color:white";text-align:left> Annual Income </p>
+        <p style="color:white;text-align:left"> Annual Income </p>
         """
     crb = """
-        <p style="color:white";text-align:left> Total Credit Revolving Balance </p>
+        <p style="color:white;text-align:left"> Total Credit Revolving Balance </p>
         """
     rlur = """
-        <p style="color:white";text-align:left> Revolving Line Utilization Rate </p>
+        <p style="color:white;text-align:left"> Revolving Line Utilization Rate </p>
         """
     dti = """
-        <p style="color:white";text-align:left> Debt To Income Ratio </p>
+        <p style="color:white;text-align:left"> Debt To Income Ratio </p>
         """
     intr = """
-        <p style="color:white";text-align:left> Interest Rate </p>
+        <p style="color:white;text-align:left"> Interest Rate </p>
         """
     loan = """
-        <p style="color:white";text-align:left> Loan Amount </p>
+        <p style="color:white;text-align:left"> Loan Amount </p>
         """
     lpm = """
-        <p style="color:white";text-align:left> Last Payment Amount </p>
+        <p style="color:white;text-align:left"> Last Payment Amount </p>
         """
     st.markdown(
         """
@@ -146,7 +145,7 @@ def main():
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(fico, unsafe_allow_html=True)
 
-    fico = st.number_input("      ")
+    fico_range = st.number_input("      ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(an_inc, unsafe_allow_html=True)
 
@@ -160,17 +159,21 @@ def main():
 
     revol_util = st.number_input("         ")
     st.markdown(p, unsafe_allow_html=True)
+    st.markdown(dti, unsafe_allow_html=True)
+
+    dti = st.number_input("          ")
+    st.markdown(p, unsafe_allow_html=True)
     st.markdown(intr, unsafe_allow_html=True)
 
-    int_rate = st.number_input("          ")
+    int_rate = st.number_input("           ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(loan, unsafe_allow_html=True)
 
-    loan_amnt = st.number_input("           ")
+    loan_amnt = st.number_input("            ")
     st.markdown(p, unsafe_allow_html=True)
     st.markdown(lpm, unsafe_allow_html=True)
 
-    last_pymnt_amnt = st.number_input("            ")
+    last_pymnt_amnt = st.number_input("             ")
     result = ""
 
     # When Predict is clicked:
