@@ -1,12 +1,15 @@
 # %%writefile app.py
+import bz2
 import pickle
-
+import _pickle as cPickle
 import streamlit as st
 
 # Load trained model
-pickle_in = open("rfc_model.pkl", 'rb')
-classifier = pickle.load(pickle_in)
-
+def decompress_pickle(file):
+    data = bz2.BZ2File(file, 'rb')
+    data = cPickle.load(data)
+    return data
+classifier = decompress_pickle('forest.pbz2') 
 
 @st.cache()
 def prediction(term,issue_d,inq_last_6mths,mort_acc,open_acc,earliest_cr_year,
